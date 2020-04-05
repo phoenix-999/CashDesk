@@ -1,0 +1,1 @@
+﻿create database CashDesc collate Cyrillic_General_CI_AS

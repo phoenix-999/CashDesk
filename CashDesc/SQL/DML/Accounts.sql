@@ -1,0 +1,4 @@
+﻿use CashDesc
+insert into Accounts (Number, ActionTime) values
+('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', GETDATE()),
+('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', GETDATE())

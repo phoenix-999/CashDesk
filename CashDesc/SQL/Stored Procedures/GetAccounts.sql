@@ -16,8 +16,8 @@ AS
 			sum(act.Amount) as AccountSum
 		from
 			Accounts acc
-			inner join Actions act on (acc.Number = act.AccountNumber)
-			inner join Products p on (act.ProductId = p.Id)
+			left join Actions act on (acc.Number = act.AccountNumber)
+			left join Products p on (act.ProductId = p.Id)
 		where
 			(@number is null or acc.Number = @number)
 			and (@productName is null or p.ProductName like @productName)

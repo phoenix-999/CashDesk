@@ -6,15 +6,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace DataLib.Models
 {
     public class Product
     {
-
-        public const string PRODUCTS = "Products";
-        public const string PRODUCT_TYPES = "ProductTypes";
-
+        private ProductFilter _lastFilter = null;
 
         /// <summary>
         /// Выполняет запрос к БД (таблица Products) с учетом указанных фильтров
@@ -22,12 +20,16 @@ namespace DataLib.Models
         /// <param name="filters">Параметры фильтра</param>
         /// <returns>DataSet из заполненной таблицей Products</returns>
         /// <exception cref="ErrorWorkingDb">Выбрасывается в случае ошибки при выполнении запроса к БД. Логируется.</exception>
+        /// <exception cref="DBConcurrencyException"> Попытка выполнить инструкцию INSERT, UPDATE или DELETE привела к нулевому количеству
+        //     обработанных записей.  Не логируется.</exception>
         public CashDescDataSet GetProducts(ProductFilter filters)
         {
+            _lastFilter = filters;
             var ds = new CashDescDataSet();
 
             using (var conn = new SqlConnection(Config.ConnectionString))
             {
+                conn.Open();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -43,7 +45,7 @@ namespace DataLib.Models
 
                 try
                 {
-                    adapter.Fill(ds, PRODUCTS);
+                    adapter.Fill(ds, CashDescDataSet.PRODUCTS);
                 }
                 catch (SystemException ex)
                 {
@@ -55,7 +57,52 @@ namespace DataLib.Models
             return ds;
         }
     
-        
+        public CashDescDataSet Update(CashDescDataSet ds)
+        {
+            using (SqlConnection conn = new SqlConnection(Config.ConnectionString))
+            {
+                conn.Open();
+                SqlTransaction transaction = conn.BeginTransaction();
+
+                SqlDataAdapter adapter = new SqlDataAdapter();
+
+                var cmd = new SqlCommand();
+                cmd.Connection = conn;
+                cmd.Transaction = transaction;
+                cmd.CommandText = "select Id, ProductName, Price, Description, TypeId from Products";
+
+                SqlCommand deleteCmd = new SqlCommand();
+                deleteCmd.Connection = conn;
+                deleteCmd.CommandType = CommandType.StoredProcedure;
+                deleteCmd.Transaction = transaction;
+                deleteCmd.CommandText = "DeleteProduct";
+                deleteCmd.Parameters.Add(new SqlParameter("@id", SqlDbType.Int, 0, "Id"));
+
+                adapter.SelectCommand = cmd;
+                SqlCommandBuilder cmdBuilder = new SqlCommandBuilder(adapter);
+                adapter.DeleteCommand = deleteCmd;
+
+                try
+                {
+                    adapter.Update(ds, CashDescDataSet.PRODUCTS);
+                    ds.AcceptChanges();
+                    transaction.Commit();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Config.Logger.Error(ex.ToString());
+                    transaction.Rollback();
+                    throw new ErrorWorkingDb(ex);
+                }
+                catch(DBConcurrencyException ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+                    
+            }
+            return GetProducts(_lastFilter);
+        }
 
     
     }

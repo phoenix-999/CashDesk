@@ -1,9 +1,12 @@
-﻿CREATE PROCEDURE GetProductsFromAccount
+﻿CREATE PROCEDURE GetActionsFromAccount
 	@accountNumber varchar(32)
 AS
 	select
-		p.Id,
-		p.ProductName
+		acc.Id,
+		acc.AccountNumber,
+		acc.ProductId,
+		p.ProductName,
+		acc.Amount
 	from
 		Actions acc
 		inner join Products p on (acc.ProductId = p.Id)

@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductFilter.cs" />
+    <Compile Include="Models\ProductType.cs" />
     <Compile Include="Models\TypeStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

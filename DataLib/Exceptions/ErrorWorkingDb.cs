@@ -11,10 +11,18 @@ namespace DataLib.Exceptions
     {
         public ErrorWorkingDb(Exception ex)
         {
-            _innerMessage = ex.GetLowerLevelException(ex).Message;
+            _lowerLevelException = ex.GetLowerLevelException(ex);
+            _innerMessage = _lowerLevelException.Message;
+            if(ex.GetType() != _lowerLevelException.GetType())
+            {
+                Config.Logger.Error("\tLower level exception:\n\t" + _lowerLevelException.ToString());
+            }
         }
 
+        Exception _lowerLevelException;
         string _innerMessage = "";
+
+        public string AdminMessage => _innerMessage; //Для отображения в админке
 
         public override string Message
         {

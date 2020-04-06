@@ -11,6 +11,7 @@ AS
 		p.ProductName,
 		p.Description,
 		p.Price,
+		p.TypeId,
 		pt.TypeName
 	from
 		Products p

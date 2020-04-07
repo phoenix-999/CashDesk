@@ -47,7 +47,7 @@ namespace CashDesc
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            _product["ProductName"] = tbProductName.Text;
+            _product["ProductName"] = string.IsNullOrEmpty(tbProductName.Text) ? null : tbProductName.Text;//Если null - ошибка обработки данных. Поле не должно быть null. Иначе улетит пустая строка.
             _product["Price"] = nudPrice.Value;
             _product["Description"] = tbDescription.Text;
             ProductType type = cbProductType.SelectedItem as ProductType;

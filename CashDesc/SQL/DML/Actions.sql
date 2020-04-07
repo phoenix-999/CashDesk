@@ -1,5 +1,5 @@
 ﻿use CashDesc
 insert into Actions(AccountNumber, ProductId, Amount) values
-('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1, 100),
-('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 2, 200),
-('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 3, 300)
+(1, 1, 100),
+(2, 2, 200),
+(2, 3, 300)

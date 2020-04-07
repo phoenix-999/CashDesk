@@ -55,18 +55,37 @@ namespace CashDesc
             accountDs = new Account().Update(accountDs);
             dataGridView2.DataSource = accountDs.Tables[CashDescDataSet.ACCOUNTS];
             dataGridView2.Refresh();
+
+            dataGridView_actions.DataSource = accountDs.Tables[CashDescDataSet.ACTIONS];
+            dataGridView_actions.Refresh();
         }
 
+
+        int currentAccountNumber;
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             var grid = (DataGridView)sender;
             var row = grid.Rows[e.RowIndex];
             var source = (DataRowView)row.DataBoundItem;
-            string accountNumber = (string)source["Number"];
+            currentAccountNumber = (int)source["Number"];
 
-            new Account().GetActionsFromAccount(accountNumber, accountDs.Tables[CashDescDataSet.ACTIONS]);
+            new Account().GetActionsFromAccount(currentAccountNumber, accountDs.Tables[CashDescDataSet.ACTIONS]);
 
             dataGridView_actions.DataSource = accountDs.Tables[CashDescDataSet.ACTIONS];
+            dataGridView_actions.Refresh();
+        }
+
+        private void btn_addAccount_Click(object sender, EventArgs e)
+        {
+            accountDs.Tables[CashDescDataSet.ACCOUNTS].Rows.Add(accountDs.Tables[CashDescDataSet.ACCOUNTS].NewRow());
+            dataGridView2.Refresh();
+        }
+
+        private void btn_addAction_Click(object sender, EventArgs e)
+        {
+            var newAction = accountDs.Tables[CashDescDataSet.ACTIONS].NewRow();
+            newAction["AccountNumber"] = currentAccountNumber;
+            accountDs.Tables[CashDescDataSet.ACTIONS].Rows.Add(newAction);
             dataGridView_actions.Refresh();
         }
     }

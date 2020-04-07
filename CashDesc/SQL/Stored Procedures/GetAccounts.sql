@@ -1,5 +1,7 @@
-﻿CREATE PROCEDURE GetAccounts
-	@number varchar(32) = null,
+﻿
+
+CREATE PROCEDURE GetAccounts
+	@number int = null,
 	@productName nvarchar(200) = null,
 	@accountDate datetime2(7) = null,
 	@sumFrom money = null,
@@ -13,7 +15,7 @@ AS
 		select
 			acc.Number,
 			acc.ActionTime,
-			sum(act.Amount) as AccountSum
+			sum(p.Price - act.Discount) as AccountSum
 		from
 			Accounts acc
 			left join Actions act on (acc.Number = act.AccountNumber)

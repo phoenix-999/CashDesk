@@ -64,7 +64,7 @@ namespace DataLib.Models
         }
     
 
-        public void GetActionsFromAccount(string accountNumber, DataTable resultTable)
+        public void GetActionsFromAccount(int accountNumber, DataTable resultTable)
         {
             if (resultTable == null) throw new ArgumentNullException();
             if (resultTable.TableName != CashDescDataSet.ACTIONS) throw new ArgumentException();
@@ -105,7 +105,7 @@ namespace DataLib.Models
         /// <exception cref="ArgumentNullException">Отсутсвует одна или все таблицы в DataSet</exception>
         /// <exception cref="DBConcurrencyException"> Попытка выполнить инструкцию INSERT, UPDATE или DELETE привела к нулевому количеству
         ///     обработанных записей.  Не логируется.</exception>
-        public CashDescDataSet Update(CashDescDataSet ds)
+        public CashDescDataSet Update(CashDescDataSet ds, bool forceUpdate=false)
         {
             if(ds == null || ds.Tables.Contains(CashDescDataSet.ACCOUNTS) == false || ds.Tables.Contains(CashDescDataSet.ACTIONS) == false)
             {
@@ -124,6 +124,8 @@ namespace DataLib.Models
                         adapter.SelectCommand = new SqlCommand(cmdText, conn);
                         var cmdBuilder = new SqlCommandBuilder(adapter);
 
+                        adapter.ContinueUpdateOnError = forceUpdate;
+
                         try
                         {
                             adapter.Update(ds, CashDescDataSet.ACCOUNTS);
@@ -138,7 +140,7 @@ namespace DataLib.Models
                             throw ex;
                         }
 
-                        cmdText = "select Id, AccountNumber, ProductId, Amount from Actions";
+                        cmdText = "select Id, AccountNumber, ProductId, Discount from Actions";
                         adapter.SelectCommand = new SqlCommand(cmdText, conn);
                         cmdBuilder.RefreshSchema();
 
@@ -163,7 +165,7 @@ namespace DataLib.Models
             }
             catch (TransactionAbortedException ex)
             {
-                Config.Logger.Error(ex.Message);
+                Config.Logger.Error(ex.GetBaseException().ToString());
                 throw new ErrorWorkingDb(ex);
             }
 

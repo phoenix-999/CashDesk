@@ -57,7 +57,7 @@ namespace DataLib.Models
             return ds;
         }
     
-        public CashDescDataSet Update(CashDescDataSet ds)
+        public CashDescDataSet Update(CashDescDataSet ds, bool forceUpdate=false)
         {
             using (SqlConnection conn = new SqlConnection(Config.ConnectionString))
             {
@@ -81,6 +81,8 @@ namespace DataLib.Models
                 adapter.SelectCommand = cmd;
                 SqlCommandBuilder cmdBuilder = new SqlCommandBuilder(adapter);
                 adapter.DeleteCommand = deleteCmd;
+
+                adapter.ContinueUpdateOnError = forceUpdate;
 
                 try
                 {

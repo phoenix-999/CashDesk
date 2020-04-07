@@ -34,6 +34,8 @@
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.dataGridView_actions = new System.Windows.Forms.DataGridView();
+            this.btn_addAccount = new System.Windows.Forms.Button();
+            this.btn_addAction = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -92,12 +94,35 @@
             this.dataGridView_actions.Name = "dataGridView_actions";
             this.dataGridView_actions.Size = new System.Drawing.Size(337, 132);
             this.dataGridView_actions.TabIndex = 5;
+            
+            // 
+            // btn_addAccount
+            // 
+            this.btn_addAccount.Location = new System.Drawing.Point(344, 112);
+            this.btn_addAccount.Name = "btn_addAccount";
+            this.btn_addAccount.Size = new System.Drawing.Size(75, 23);
+            this.btn_addAccount.TabIndex = 6;
+            this.btn_addAccount.Text = "Add";
+            this.btn_addAccount.UseVisualStyleBackColor = true;
+            this.btn_addAccount.Click += new System.EventHandler(this.btn_addAccount_Click);
+            // 
+            // btn_addAction
+            // 
+            this.btn_addAction.Location = new System.Drawing.Point(344, 181);
+            this.btn_addAction.Name = "btn_addAction";
+            this.btn_addAction.Size = new System.Drawing.Size(75, 23);
+            this.btn_addAction.TabIndex = 7;
+            this.btn_addAction.Text = "Add Action";
+            this.btn_addAction.UseVisualStyleBackColor = true;
+            this.btn_addAction.Click += new System.EventHandler(this.btn_addAction_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_addAction);
+            this.Controls.Add(this.btn_addAccount);
             this.Controls.Add(this.dataGridView_actions);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView4);
@@ -125,6 +150,8 @@
         private System.Windows.Forms.DataGridView dataGridView4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridView dataGridView_actions;
+        private System.Windows.Forms.Button btn_addAccount;
+        private System.Windows.Forms.Button btn_addAction;
     }
 }
 

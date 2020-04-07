@@ -8,7 +8,7 @@ namespace DataLib.Models
 {
     public class AccountFilter
     {
-        public string Number { get; set; }
+        public int? Number { get; set; }
         public string ProductName { get; set; }
         public DateTime? AccountDate { get; set; }
         public decimal? SumFrom { get; set; }

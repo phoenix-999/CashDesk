@@ -26,6 +26,10 @@ namespace DataLib.Models
             Actions.Columns.Add(id);
 
             DataColumn accountNumber = new DataColumn("AccountNumber");
+            //Если не указать явно - ругается при Relation в DataSet
+            //"Среди родительских столбцов и дочерних столбцов отсутствуют столбцы совпадающих типов"
+            //Выше указанное может быть связано с признаком IDENTITY одного из столбцов
+            accountNumber.DataType = typeof(int);
             Actions.Columns.Add(accountNumber);
 
             DataColumn productId = new DataColumn("ProductId");

@@ -1,4 +1,9 @@
 ﻿use CashDesc
-insert into Accounts (Number, ActionTime) values
-('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', GETDATE()),
-('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', GETDATE())
+insert into Accounts default values
+
+go
+
+use CashDesc
+insert into Accounts default values
+
+go

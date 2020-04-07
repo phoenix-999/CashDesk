@@ -207,7 +207,16 @@ namespace CashDesc
 
         private void dataGridViewProducts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            var gridRow = dataGridViewProducts.Rows[e.RowIndex];
+            DataGridViewRow gridRow;
+            try
+            {
+                gridRow = dataGridViewProducts.Rows[e.RowIndex];
+            }
+            catch (ArgumentOutOfRangeException)//Возможен клик по заголовку
+            {
+                return;
+            }
+
             var dataRow = ((DataRowView)gridRow.DataBoundItem).Row;
             var result = new ProductForm(dataRow, businessLogic.GetProductTypeList()).ShowDialog();
             if (result != DialogResult.Cancel)

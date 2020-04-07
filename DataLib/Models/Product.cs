@@ -12,11 +12,6 @@ namespace DataLib.Models
 {
     public class Product
     {
-        public int Id { get; set; }
-        public string ProductName { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int TypeId { get; set; }
 
         private ProductFilter _lastFilter = null;
 
@@ -26,6 +21,7 @@ namespace DataLib.Models
         /// <param name="filters">Параметры фильтра</param>
         /// <returns>DataSet из заполненной таблицей Products</returns>
         /// <exception cref="ErrorWorkingDb">Выбрасывается в случае ошибки при выполнении запроса к БД. Логируется.</exception>
+        /// <exception cref="InputDataException">Выбрасывается в случае ошибки данных запроса. Логируется.</exception>
         /// <exception cref="DBConcurrencyException"> Попытка выполнить инструкцию INSERT, UPDATE или DELETE привела к нулевому количеству
         //     обработанных записей.  Не логируется.</exception>
         public CashDescDataSet GetProducts(ProductFilter filters)
@@ -102,7 +98,13 @@ namespace DataLib.Models
                     transaction.Rollback();
                     throw new ErrorWorkingDb(ex);
                 }
-                catch(DBConcurrencyException ex)
+                catch (SqlException ex)
+                {
+                    Config.Logger.Error(ex.ToString());
+                    transaction.Rollback();
+                    throw new InputDataException(ex);
+                }
+                catch (DBConcurrencyException ex)
                 {
                     transaction.Rollback();
                     throw ex;

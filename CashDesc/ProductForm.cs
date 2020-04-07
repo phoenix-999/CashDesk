@@ -50,9 +50,12 @@ namespace CashDesc
             _product["ProductName"] = tbProductName.Text;
             _product["Price"] = nudPrice.Value;
             _product["Description"] = tbDescription.Text;
-            ProductType type = (ProductType)cbProductType.SelectedItem;
-            _product["TypeId"] = type?.Id;
-            _product["TypeName"] = type?.TypeName;
+            ProductType type = cbProductType.SelectedItem as ProductType;
+            if(type != null)
+            {
+                _product["TypeId"] = type.Id;
+                _product["TypeName"] = type.TypeName;
+            }
             RowAdded = true;
         }
     }

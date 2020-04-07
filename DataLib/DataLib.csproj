@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Exceptions\ErrorWorkingDb.cs" />
+    <Compile Include="Exceptions\InputDataException.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountFilter.cs" />
     <Compile Include="Models\CashDescDataSet.cs">

@@ -9,6 +9,7 @@ namespace LanguageLib
     public enum StrResourceKeys
     {
         DbException,
+        InputDataException,
         CashDesc,
         Goods,
         Product,

@@ -28,6 +28,7 @@ namespace LanguageLib.Locales
         public  void Initialize()
         {
             _resources[StrResourceKeys.DbException] = "Ошибка в работе с базой данных. Обратитесь к администратору.";
+            _resources[StrResourceKeys.InputDataException] = "Ошибка обработки данных";
             _resources[StrResourceKeys.CashDesc] = "Касса";
             _resources[StrResourceKeys.Goods] = "Товары";
             _resources[StrResourceKeys.Product] = "Товар";

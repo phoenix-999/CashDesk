@@ -17,6 +17,8 @@ namespace DataLib.Models
 
         public DataTable Actions { get; set; }
         public DataTable Accounts { get; set; }
+        public DataTable Products { get; set; }
+        public DataTable ProductTypes { get; set; }
 
         public void InitActionsTable()
         {
@@ -35,10 +37,57 @@ namespace DataLib.Models
             DataColumn productId = new DataColumn("ProductId");
             Actions.Columns.Add(productId);
 
+            DataColumn price = new DataColumn("Price");
+            Actions.Columns.Add(price);
+
+            DataColumn discount = new DataColumn("Discount");
+            Actions.Columns.Add(discount);
+
             DataColumn amount = new DataColumn("Amount");
             Actions.Columns.Add(amount);
 
             this.Tables.Add(Actions);
+        }
+
+        public void InitProductsTable()
+        {
+            Products = new DataTable(PRODUCTS);
+
+            DataColumn id = new DataColumn("Id");
+            Products.Columns.Add(id);
+
+            DataColumn productName = new DataColumn("ProductName");
+            Products.Columns.Add(productName);
+
+            DataColumn description = new DataColumn("Description");
+            Products.Columns.Add(description);
+
+            DataColumn price = new DataColumn("Price");
+            Products.Columns.Add(price);
+
+            DataColumn typeId = new DataColumn("TypeId");
+            Products.Columns.Add(typeId);
+
+            DataColumn typeName = new DataColumn("TypeName");
+            Products.Columns.Add(typeName);
+
+            this.Tables.Add(Products);
+        }
+
+        public void InitProductTypesTable()
+        {
+            ProductTypes = new DataTable(PRODUCT_TYPES);
+
+            DataColumn id = new DataColumn("Id");
+            ProductTypes.Columns.Add(id);
+
+            DataColumn typeName = new DataColumn("TypeName");
+            ProductTypes.Columns.Add(typeName);
+
+            DataColumn description = new DataColumn("Description");
+            ProductTypes.Columns.Add(description);
+
+            this.Tables.Add(ProductTypes);
         }
 
     }

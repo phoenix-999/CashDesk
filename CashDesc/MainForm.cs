@@ -8,85 +8,234 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DataLib.Models;
+using LanguageLib;
 
 namespace CashDesc
 {
     public partial class MainForm : Form
     {
+        BusinessLogic businessLogic = new BusinessLogic();
         public MainForm()
         {
             InitializeComponent();
+            Config.SetLanguage();
+
+            this.Text = Config.Language[StrResourceKeys.CashDesc];
+
+            InitControls();
+            
         }
 
-        CashDescDataSet productDs;
-        CashDescDataSet accountDs;
-
-        private void MainForm_Load(object sender, EventArgs e)
+        void InitControls()
         {
+            tabPageGoods.Text = Config.Language[StrResourceKeys.Goods];
+            tabPageAccounts.Text = Config.Language[StrResourceKeys.Accounts];
+            groupBoxGoodsFilter.Text = Config.Language[StrResourceKeys.Filter];
+            lbProductName.Text = Config.Language[StrResourceKeys.ProductName];
+            lbProductType.Text = Config.Language[StrResourceKeys.ProductType];
+            lbPrice.Text = Config.Language[StrResourceKeys.Price];
+            btnSearchProducts.Text = Config.Language[StrResourceKeys.Search];
+            btnAddProduct.Text = Config.Language[StrResourceKeys.Add];
+
+            InitProductTypeList(cbProductType);
+        }
+
+        internal static void InitProductTypeList(ComboBox comboBox, int? currentId=null)
+        {
+            var businessLogic = new BusinessLogic();
             try
             {
-                var products = new Product().GetProducts(null);
-                productDs = products;
-                var tableProducts = products.Tables[CashDescDataSet.PRODUCTS];
-                dataGridView1.DataSource = tableProducts;
+                businessLogic.LoadProductTypes();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            foreach (var pt in businessLogic.GetProductTypeList())
+            {
+                var index = comboBox.Items.Add(pt);
+                if(currentId != null && pt.Id == currentId)
+                    comboBox.SelectedIndex = index;
 
 
-                var filter = new AccountFilter { SumFrom = 200 };
-                var accounts = new Account().GetAccounts(filter);
-                accountDs = accounts;
-                var tableAccounts = accounts.Tables[CashDescDataSet.ACCOUNTS];
-                dataGridView2.DataSource = tableAccounts;
+            }
+        }
 
-                var productTypes = new ProductType().GetProductTypes();
-                dataGridView4.DataSource = productTypes.Tables[ProductType.PRODUCT_TYPES];
+        private void btnSearchProducts_Click(object sender, EventArgs e)
+        {
+            ProductFilter filter = new ProductFilter();
+            filter.Name = string.IsNullOrEmpty(tbProductName.Text) ? null : tbProductName.Text;
+            filter.Type = string.IsNullOrEmpty(cbProductType.Text) ? null : cbProductType.Text;
+            filter.PriceFrom = nudPriceFrom.Value;
+            filter.PriceTo = nudPriceTo.Value;
+
+            CashDescDataSet productDs = null;
+            try
+            {
+                businessLogic.LoadProducts(filter);
+                productDs = BusinessLogic.ProductDs;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            RefreshProductsView(productDs);
+        }
+
+        private void RefreshProductsView(CashDescDataSet productDs)
+        {
+            dataGridViewProducts.AutoGenerateColumns = false;
+            dataGridViewProducts.DataSource = productDs.Tables[CashDescDataSet.PRODUCTS];
+
+            dataGridViewProducts.Columns.Clear();
+
+            //var id = new DataGridViewColumn();
+            //id.DataPropertyName = "Id";
+            //id.Name = "Id";
+            //id.CellTemplate = new DataGridViewTextBoxCell();
+            //id.Visible = false;
+            //dataGridViewProducts.Columns.Add(id);
+
+            //var typeid = new DataGridViewColumn();
+            //typeid.DataPropertyName = "TypeId";
+            //typeid.CellTemplate = new DataGridViewTextBoxCell();
+            //typeid.Visible = false;
+            //dataGridViewProducts.Columns.Add(typeid);
+
+            var productName = new DataGridViewColumn();
+            productName.DataPropertyName = "ProductName";
+            productName.Name = Config.Language[StrResourceKeys.ProductName];
+            productName.CellTemplate = new DataGridViewTextBoxCell();
+            productName.SortMode = DataGridViewColumnSortMode.Automatic;
+            productName.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            productName.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewProducts.Columns.Add(productName);
+
+            var productTypeName = new DataGridViewColumn();
+            productTypeName.DataPropertyName = "TypeName";
+            productTypeName.Name = Config.Language[StrResourceKeys.ProductType];
+            productTypeName.CellTemplate = new DataGridViewTextBoxCell();
+            productTypeName.SortMode = DataGridViewColumnSortMode.Automatic;
+            productTypeName.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            productTypeName.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewProducts.Columns.Add(productTypeName);
+
+            var productPrice = new DataGridViewColumn();
+            productPrice.DataPropertyName = "Price";
+            productPrice.Name = Config.Language[StrResourceKeys.Price];
+            productPrice.CellTemplate = new DataGridViewTextBoxCell();
+            productPrice.SortMode = DataGridViewColumnSortMode.Automatic;
+            productPrice.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            productPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewProducts.Columns.Add(productPrice);
+
+            var productDescription = new DataGridViewColumn();
+            productDescription.DataPropertyName = "Description";
+            productDescription.Name = Config.Language[StrResourceKeys.Description];
+            productDescription.CellTemplate = new DataGridViewTextBoxCell();
+            dataGridViewProducts.Columns.Add(productDescription);
+
+            dataGridViewProducts.Refresh();
+        }
+
+        private void btnAddProduct_Click(object sender, EventArgs e)
+        {
+            var newRow = BusinessLogic.ProductDs.Tables[CashDescDataSet.PRODUCTS].NewRow();
+            BusinessLogic.ProductDs.Tables[CashDescDataSet.PRODUCTS].Rows.Add(newRow);
+            var result = new ProductForm(newRow, businessLogic.GetProductTypeList()).ShowDialog();
+            if (result != DialogResult.Cancel)
+            {
+                UpdateProducts();
+                RefreshProductsView(BusinessLogic.ProductDs);
+            }
+            else
+            {
+                BusinessLogic.ProductDs.Tables[CashDescDataSet.PRODUCTS].Rows.Remove(newRow);
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        void UpdateProducts()
         {
-            productDs = new Product().Update(this.productDs);
-            dataGridView1.DataSource = productDs.Tables[CashDescDataSet.PRODUCTS];
-            dataGridView1.Refresh();
+            try
+            {
+                businessLogic.UpdateProducts();
+            }
+            catch(DBConcurrencyException)
+            {
+                string msg = Config.Language[StrResourceKeys.ConcurencyException] + "\n" + Config.Language[StrResourceKeys.ConcurencyExceptionQuestion];
+                var ansver = MessageBox.Show(
+                    msg,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Error
+                    );
+                if(ansver == DialogResult.OK)
+                {
+                    try
+                    {
+                        businessLogic.UpdateProducts(true);
+                    }
+                    catch (Exception nextEx)
+                    {
+                        MessageBox.Show(
+                            nextEx.Message,
+                            Config.Language[StrResourceKeys.Error],
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
 
-            accountDs = new Account().Update(accountDs);
-            dataGridView2.DataSource = accountDs.Tables[CashDescDataSet.ACCOUNTS];
-            dataGridView2.Refresh();
-
-            dataGridView_actions.DataSource = accountDs.Tables[CashDescDataSet.ACTIONS];
-            dataGridView_actions.Refresh();
+        private void dataGridViewProducts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var gridRow = dataGridViewProducts.Rows[e.RowIndex];
+            var dataRow = ((DataRowView)gridRow.DataBoundItem).Row;
+            var result = new ProductForm(dataRow, businessLogic.GetProductTypeList()).ShowDialog();
+            if (result != DialogResult.Cancel)
+            {
+                UpdateProducts();
+                RefreshProductsView(BusinessLogic.ProductDs);
+            }
         }
 
 
-        int currentAccountNumber;
-        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridViewProducts_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            var grid = (DataGridView)sender;
-            var row = grid.Rows[e.RowIndex];
-            var source = (DataRowView)row.DataBoundItem;
-            currentAccountNumber = (int)source["Number"];
-
-            new Account().GetActionsFromAccount(currentAccountNumber, accountDs.Tables[CashDescDataSet.ACTIONS]);
-
-            dataGridView_actions.DataSource = accountDs.Tables[CashDescDataSet.ACTIONS];
-            dataGridView_actions.Refresh();
+            var answer = MessageBox.Show(
+                Config.Language[StrResourceKeys.DeleteQuestion],
+                Config.Language[StrResourceKeys.DeleteConfirmed],
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+                );
+            if (answer == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
         }
 
-        private void btn_addAccount_Click(object sender, EventArgs e)
+        private void dataGridViewProducts_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
-            accountDs.Tables[CashDescDataSet.ACCOUNTS].Rows.Add(accountDs.Tables[CashDescDataSet.ACCOUNTS].NewRow());
-            dataGridView2.Refresh();
-        }
-
-        private void btn_addAction_Click(object sender, EventArgs e)
-        {
-            var newAction = accountDs.Tables[CashDescDataSet.ACTIONS].NewRow();
-            newAction["AccountNumber"] = currentAccountNumber;
-            accountDs.Tables[CashDescDataSet.ACTIONS].Rows.Add(newAction);
-            dataGridView_actions.Refresh();
+            UpdateProducts();
+            RefreshProductsView(BusinessLogic.ProductDs);
         }
     }
 }

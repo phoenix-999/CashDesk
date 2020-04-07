@@ -28,6 +28,8 @@ namespace LanguageLib.Locales
         public void Initialize()
         {
             _resources[StrResourceKeys.DbException] = "Помилка в роботі з базою даних. Зверніться до адміністратора.";
+            _resources[StrResourceKeys.Goods] = "Товарb";
+            _resources[StrResourceKeys.Accounts] = "Рахунки";
         }
     }
 }

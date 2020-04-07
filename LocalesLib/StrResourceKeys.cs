@@ -8,6 +8,24 @@ namespace LanguageLib
 {
     public enum StrResourceKeys
     {
-        DbException
+        DbException,
+        CashDesc,
+        Goods,
+        Product,
+        Accounts,
+        Filter,
+        ProductName,
+        ProductType,
+        Price,
+        Description,
+        Error,
+        Search,
+        Add,
+        Apply,
+        Cancel,
+        ConcurencyException,
+        ConcurencyExceptionQuestion,
+        DeleteQuestion,
+        DeleteConfirmed
     }
 }

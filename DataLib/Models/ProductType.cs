@@ -11,8 +11,14 @@ namespace DataLib.Models
 {
     public class ProductType
     {
-        public const string PRODUCT_TYPES = "ProductTypes";
+        public int Id { get; set; }
+        public string TypeName { get; set; }
+        public string Description { get; set; }
 
+        public override string ToString()
+        {
+            return TypeName;
+        }
         /// <summary>
         /// Выполняет запрос к БД (таблица ProductTypes), выгружает данные по всем типам продуктов
         /// </summary>
@@ -35,7 +41,7 @@ namespace DataLib.Models
 
                 try
                 {
-                    adapter.Fill(ds, PRODUCT_TYPES);
+                    adapter.Fill(ds, CashDescDataSet.PRODUCT_TYPES);
                 }
                 catch(SystemException ex)
                 {

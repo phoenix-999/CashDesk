@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControlAccounts = new System.Windows.Forms.TabControl();
             this.tabPageGoods = new System.Windows.Forms.TabPage();
             this.dataGridViewProducts = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -44,25 +44,46 @@
             this.lbProductType = new System.Windows.Forms.Label();
             this.lbProductName = new System.Windows.Forms.Label();
             this.tabPageAccounts = new System.Windows.Forms.TabPage();
-            this.tabControl1.SuspendLayout();
+            this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnAddAccount = new System.Windows.Forms.Button();
+            this.btnSearchAccounts = new System.Windows.Forms.Button();
+            this.dtpAccountDate = new System.Windows.Forms.DateTimePicker();
+            this.lbAccountDate = new System.Windows.Forms.Label();
+            this.nudSummaTo = new System.Windows.Forms.NumericUpDown();
+            this.nudSummaFrom = new System.Windows.Forms.NumericUpDown();
+            this.cbProductFilter = new System.Windows.Forms.ComboBox();
+            this.tbAccountNumber = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lbAccountSum = new System.Windows.Forms.Label();
+            this.lbProductInAccount = new System.Windows.Forms.Label();
+            this.lbAccountNumber = new System.Windows.Forms.Label();
+            this.tabControlAccounts.SuspendLayout();
             this.tabPageGoods.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBoxGoodsFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPriceTo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPriceFrom)).BeginInit();
+            this.tabPageAccounts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSummaTo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSummaFrom)).BeginInit();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // tabControlAccounts
             // 
-            this.tabControl1.Controls.Add(this.tabPageGoods);
-            this.tabControl1.Controls.Add(this.tabPageAccounts);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(800, 450);
-            this.tabControl1.TabIndex = 0;
+            this.tabControlAccounts.Controls.Add(this.tabPageGoods);
+            this.tabControlAccounts.Controls.Add(this.tabPageAccounts);
+            this.tabControlAccounts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlAccounts.Location = new System.Drawing.Point(0, 0);
+            this.tabControlAccounts.Name = "tabControlAccounts";
+            this.tabControlAccounts.SelectedIndex = 0;
+            this.tabControlAccounts.Size = new System.Drawing.Size(800, 450);
+            this.tabControlAccounts.TabIndex = 0;
             // 
             // tabPageGoods
             // 
@@ -223,6 +244,8 @@
             // 
             // tabPageAccounts
             // 
+            this.tabPageAccounts.Controls.Add(this.dataGridViewAccounts);
+            this.tabPageAccounts.Controls.Add(this.panel2);
             this.tabPageAccounts.Location = new System.Drawing.Point(4, 22);
             this.tabPageAccounts.Name = "tabPageAccounts";
             this.tabPageAccounts.Padding = new System.Windows.Forms.Padding(3);
@@ -231,16 +254,176 @@
             this.tabPageAccounts.Text = "tabPage2";
             this.tabPageAccounts.UseVisualStyleBackColor = true;
             // 
+            // dataGridViewAccounts
+            // 
+            this.dataGridViewAccounts.AllowUserToAddRows = false;
+            this.dataGridViewAccounts.AllowUserToOrderColumns = true;
+            this.dataGridViewAccounts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewAccounts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewAccounts.Location = new System.Drawing.Point(3, 110);
+            this.dataGridViewAccounts.Name = "dataGridViewAccounts";
+            this.dataGridViewAccounts.ReadOnly = true;
+            this.dataGridViewAccounts.Size = new System.Drawing.Size(786, 311);
+            this.dataGridViewAccounts.TabIndex = 1;
+            this.dataGridViewAccounts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewAccounts_CellDoubleClick);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.groupBox1);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(786, 107);
+            this.panel2.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnAddAccount);
+            this.groupBox1.Controls.Add(this.btnSearchAccounts);
+            this.groupBox1.Controls.Add(this.dtpAccountDate);
+            this.groupBox1.Controls.Add(this.lbAccountDate);
+            this.groupBox1.Controls.Add(this.nudSummaTo);
+            this.groupBox1.Controls.Add(this.nudSummaFrom);
+            this.groupBox1.Controls.Add(this.cbProductFilter);
+            this.groupBox1.Controls.Add(this.tbAccountNumber);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.lbAccountSum);
+            this.groupBox1.Controls.Add(this.lbProductInAccount);
+            this.groupBox1.Controls.Add(this.lbAccountNumber);
+            this.groupBox1.Location = new System.Drawing.Point(0, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(662, 100);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            // 
+            // btnAddAccount
+            // 
+            this.btnAddAccount.Location = new System.Drawing.Point(497, 60);
+            this.btnAddAccount.Name = "btnAddAccount";
+            this.btnAddAccount.Size = new System.Drawing.Size(75, 23);
+            this.btnAddAccount.TabIndex = 11;
+            this.btnAddAccount.Text = "button1";
+            this.btnAddAccount.UseVisualStyleBackColor = true;
+            this.btnAddAccount.Click += new System.EventHandler(this.btnAddAccount_Click);
+            // 
+            // btnSearchAccounts
+            // 
+            this.btnSearchAccounts.Location = new System.Drawing.Point(393, 61);
+            this.btnSearchAccounts.Name = "btnSearchAccounts";
+            this.btnSearchAccounts.Size = new System.Drawing.Size(75, 23);
+            this.btnSearchAccounts.TabIndex = 10;
+            this.btnSearchAccounts.Text = "button1";
+            this.btnSearchAccounts.UseVisualStyleBackColor = true;
+            this.btnSearchAccounts.Click += new System.EventHandler(this.btnSearchAccounts_Click);
+            // 
+            // dtpAccountDate
+            // 
+            this.dtpAccountDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpAccountDate.Location = new System.Drawing.Point(497, 14);
+            this.dtpAccountDate.Name = "dtpAccountDate";
+            this.dtpAccountDate.Size = new System.Drawing.Size(148, 20);
+            this.dtpAccountDate.TabIndex = 9;
+            this.dtpAccountDate.Value = new System.DateTime(2020, 4, 8, 10, 8, 18, 0);
+            // 
+            // lbAccountDate
+            // 
+            this.lbAccountDate.AutoSize = true;
+            this.lbAccountDate.Location = new System.Drawing.Point(390, 20);
+            this.lbAccountDate.Name = "lbAccountDate";
+            this.lbAccountDate.Size = new System.Drawing.Size(35, 13);
+            this.lbAccountDate.TabIndex = 8;
+            this.lbAccountDate.Text = "label2";
+            // 
+            // nudSummaTo
+            // 
+            this.nudSummaTo.Location = new System.Drawing.Point(260, 65);
+            this.nudSummaTo.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.nudSummaTo.Name = "nudSummaTo";
+            this.nudSummaTo.Size = new System.Drawing.Size(98, 20);
+            this.nudSummaTo.TabIndex = 7;
+            this.nudSummaTo.Value = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            // 
+            // nudSummaFrom
+            // 
+            this.nudSummaFrom.Location = new System.Drawing.Point(111, 64);
+            this.nudSummaFrom.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.nudSummaFrom.Name = "nudSummaFrom";
+            this.nudSummaFrom.Size = new System.Drawing.Size(98, 20);
+            this.nudSummaFrom.TabIndex = 6;
+            // 
+            // cbProductFilter
+            // 
+            this.cbProductFilter.FormattingEnabled = true;
+            this.cbProductFilter.Location = new System.Drawing.Point(111, 35);
+            this.cbProductFilter.Name = "cbProductFilter";
+            this.cbProductFilter.Size = new System.Drawing.Size(247, 21);
+            this.cbProductFilter.TabIndex = 5;
+            // 
+            // tbAccountNumber
+            // 
+            this.tbAccountNumber.Location = new System.Drawing.Point(111, 12);
+            this.tbAccountNumber.Name = "tbAccountNumber";
+            this.tbAccountNumber.Size = new System.Drawing.Size(247, 20);
+            this.tbAccountNumber.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(229, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(10, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "-";
+            // 
+            // lbAccountSum
+            // 
+            this.lbAccountSum.AutoSize = true;
+            this.lbAccountSum.Location = new System.Drawing.Point(7, 72);
+            this.lbAccountSum.Name = "lbAccountSum";
+            this.lbAccountSum.Size = new System.Drawing.Size(35, 13);
+            this.lbAccountSum.TabIndex = 2;
+            this.lbAccountSum.Text = "label2";
+            // 
+            // lbProductInAccount
+            // 
+            this.lbProductInAccount.AutoSize = true;
+            this.lbProductInAccount.Location = new System.Drawing.Point(7, 44);
+            this.lbProductInAccount.Name = "lbProductInAccount";
+            this.lbProductInAccount.Size = new System.Drawing.Size(35, 13);
+            this.lbProductInAccount.TabIndex = 1;
+            this.lbProductInAccount.Text = "label2";
+            // 
+            // lbAccountNumber
+            // 
+            this.lbAccountNumber.AutoSize = true;
+            this.lbAccountNumber.Location = new System.Drawing.Point(7, 20);
+            this.lbAccountNumber.Name = "lbAccountNumber";
+            this.lbAccountNumber.Size = new System.Drawing.Size(35, 13);
+            this.lbAccountNumber.TabIndex = 0;
+            this.lbAccountNumber.Text = "label2";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControlAccounts);
             this.Name = "MainForm";
             this.Text = "CashDesc";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.tabControl1.ResumeLayout(false);
+            this.tabControlAccounts.ResumeLayout(false);
             this.tabPageGoods.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -248,13 +431,20 @@
             this.groupBoxGoodsFilter.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPriceTo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPriceFrom)).EndInit();
+            this.tabPageAccounts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSummaTo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSummaFrom)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControlAccounts;
         private System.Windows.Forms.TabPage tabPageGoods;
         private System.Windows.Forms.TabPage tabPageAccounts;
         private System.Windows.Forms.Panel panel1;
@@ -270,6 +460,21 @@
         private System.Windows.Forms.Button btnSearchProducts;
         private System.Windows.Forms.DataGridView dataGridViewProducts;
         private System.Windows.Forms.Button btnAddProduct;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown nudSummaTo;
+        private System.Windows.Forms.NumericUpDown nudSummaFrom;
+        private System.Windows.Forms.ComboBox cbProductFilter;
+        private System.Windows.Forms.TextBox tbAccountNumber;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lbAccountSum;
+        private System.Windows.Forms.Label lbProductInAccount;
+        private System.Windows.Forms.Label lbAccountNumber;
+        private System.Windows.Forms.Label lbAccountDate;
+        private System.Windows.Forms.Button btnSearchAccounts;
+        private System.Windows.Forms.DataGridView dataGridViewAccounts;
+        private System.Windows.Forms.DateTimePicker dtpAccountDate;
+        private System.Windows.Forms.Button btnAddAccount;
     }
 }
 

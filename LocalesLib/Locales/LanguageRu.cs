@@ -47,6 +47,10 @@ namespace LanguageLib.Locales
             _resources[StrResourceKeys.ConcurencyExceptionQuestion] = "Продолжить обновление не изменных строк?";
             _resources[StrResourceKeys.DeleteQuestion] = "Вы действительно хотите удалить выбранные элементы?";
             _resources[StrResourceKeys.DeleteConfirmed] = "Подтверждение удаления";
+            _resources[StrResourceKeys.AccountNumber] = "Номер счета";
+            _resources[StrResourceKeys.AccountDate] = "Дата счета";
+            _resources[StrResourceKeys.Amount] = "Сумма";
+            _resources[StrResourceKeys.Discount] = "Скидка";
         }
     }
 }

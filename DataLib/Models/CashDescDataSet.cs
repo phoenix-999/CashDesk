@@ -49,6 +49,22 @@ namespace DataLib.Models
             this.Tables.Add(Actions);
         }
 
+        public void InitAccountsTable()
+        {
+            Accounts = new DataTable(ACCOUNTS);
+
+            DataColumn accountNumber = new DataColumn("Number");
+            Accounts.Columns.Add(accountNumber);
+
+            DataColumn actionTime = new DataColumn("ActionTime");
+            Accounts.Columns.Add(actionTime);
+
+            DataColumn accountSum = new DataColumn("AccountSum");
+            Accounts.Columns.Add(accountSum);
+
+            this.Tables.Add(Accounts);
+        }
+
         public void InitProductsTable()
         {
             Products = new DataTable(PRODUCTS);

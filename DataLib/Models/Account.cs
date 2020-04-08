@@ -135,6 +135,11 @@ namespace DataLib.Models
                             Config.Logger.Error(ex.ToString());
                             throw new ErrorWorkingDb(ex);
                         }
+                        catch (SqlException ex)
+                        {
+                            Config.Logger.Error(ex.ToString());
+                            throw new InputDataException(ex);
+                        }
                         catch (DBConcurrencyException ex)
                         {
                             throw ex;
@@ -153,6 +158,11 @@ namespace DataLib.Models
                             Config.Logger.Error(ex.ToString());
                             throw new ErrorWorkingDb(ex);
                         }
+                        catch (SqlException ex)
+                        {
+                            Config.Logger.Error(ex.ToString());
+                            throw new InputDataException(ex);
+                        }
                         catch (DBConcurrencyException ex)
                         {
                             throw ex;
@@ -170,6 +180,35 @@ namespace DataLib.Models
             }
 
             return GetAccounts(_lastFilter);
+        }
+
+        public int CreateAccount()
+        {
+            using(var conn = new SqlConnection(Config.ConnectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "CreateAccount";
+
+                SqlParameter outNumber = new SqlParameter();
+                outNumber.ParameterName = "@outNumber";
+                outNumber.SqlDbType = SqlDbType.Int;
+                outNumber.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outNumber);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch(Exception ex)
+                {
+                    Config.Logger.Error(ex.ToString());
+                    throw new ErrorWorkingDb(ex);
+                }
+                return (int)outNumber.Value;
+            }
         }
     }
 }

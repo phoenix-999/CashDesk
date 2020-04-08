@@ -38,6 +38,16 @@ namespace CashDesc
             btnAddProduct.Text = Config.Language[StrResourceKeys.Add];
 
             InitProductTypeList(cbProductType);
+
+            tabControlAccounts.Text = Config.Language[StrResourceKeys.Accounts];
+            lbAccountNumber.Text = Config.Language[StrResourceKeys.AccountNumber];
+            lbProductInAccount.Text = Config.Language[StrResourceKeys.Product];
+            lbAccountSum.Text = Config.Language[StrResourceKeys.Amount];
+            lbAccountDate.Text = Config.Language[StrResourceKeys.AccountDate];
+            btnSearchAccounts.Text = Config.Language[StrResourceKeys.Search];
+            btnAddAccount.Text = Config.Language[StrResourceKeys.Add];
+
+            InitProductList(cbProductFilter);
         }
 
         internal static void InitProductTypeList(ComboBox comboBox, int? currentId=null)
@@ -65,6 +75,33 @@ namespace CashDesc
 
 
             }
+        }
+
+        internal static void InitProductList(ComboBox comboBox, int? currentId = null)
+        {
+            var businessLogic = new BusinessLogic();
+            List<Product> productList;
+            try
+            {
+                productList = businessLogic.GetProductList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            foreach (var product in productList)
+            {
+                var index = comboBox.Items.Add(product);
+                if (currentId != null && product.Id == currentId)
+                    comboBox.SelectedIndex = index;
+            }
+
         }
 
         private void btnSearchProducts_Click(object sender, EventArgs e)
@@ -98,19 +135,6 @@ namespace CashDesc
             dataGridViewProducts.DataSource = productDs.Tables[CashDescDataSet.PRODUCTS];
 
             dataGridViewProducts.Columns.Clear();
-
-            //var id = new DataGridViewColumn();
-            //id.DataPropertyName = "Id";
-            //id.Name = "Id";
-            //id.CellTemplate = new DataGridViewTextBoxCell();
-            //id.Visible = false;
-            //dataGridViewProducts.Columns.Add(id);
-
-            //var typeid = new DataGridViewColumn();
-            //typeid.DataPropertyName = "TypeId";
-            //typeid.CellTemplate = new DataGridViewTextBoxCell();
-            //typeid.Visible = false;
-            //dataGridViewProducts.Columns.Add(typeid);
 
             var productName = new DataGridViewColumn();
             productName.DataPropertyName = "ProductName";
@@ -148,15 +172,53 @@ namespace CashDesc
             dataGridViewProducts.Refresh();
         }
 
+        private void RefreshAccountsView(CashDescDataSet accountDs)
+        {
+            dataGridViewAccounts.AutoGenerateColumns = false;
+            dataGridViewAccounts.DataSource = accountDs.Tables[CashDescDataSet.ACCOUNTS];
+
+            dataGridViewAccounts.Columns.Clear();
+
+            var accountNumber = new DataGridViewColumn();
+            accountNumber.DataPropertyName = "Number";
+            accountNumber.Name = Config.Language[StrResourceKeys.AccountNumber];
+            accountNumber.CellTemplate = new DataGridViewTextBoxCell();
+            accountNumber.SortMode = DataGridViewColumnSortMode.Automatic;
+            accountNumber.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            accountNumber.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewAccounts.Columns.Add(accountNumber);
+
+            var date = new DataGridViewColumn();
+            date.DataPropertyName = "ActionTime";
+            date.Name = Config.Language[StrResourceKeys.AccountDate];
+            date.CellTemplate = new DataGridViewTextBoxCell();
+            date.SortMode = DataGridViewColumnSortMode.Automatic;
+            date.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            date.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewAccounts.Columns.Add(date);
+
+            var accountSum = new DataGridViewColumn();
+            accountSum.DataPropertyName = "AccountSum";
+            accountSum.Name = Config.Language[StrResourceKeys.Amount];
+            accountSum.CellTemplate = new DataGridViewTextBoxCell();
+            accountSum.SortMode = DataGridViewColumnSortMode.Automatic;
+            accountSum.HeaderCell.Style.WrapMode = DataGridViewTriState.False;
+            accountSum.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells | DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridViewAccounts.Columns.Add(accountSum);
+
+            dataGridViewAccounts.Refresh();
+        }
+        
         private void btnAddProduct_Click(object sender, EventArgs e)
         {
             var newRow = BusinessLogic.ProductDs.Tables[CashDescDataSet.PRODUCTS].NewRow();
             BusinessLogic.ProductDs.Tables[CashDescDataSet.PRODUCTS].Rows.Add(newRow);
-            var result = new ProductForm(newRow, businessLogic.GetProductTypeList()).ShowDialog();
+            var result = new ProductForm(newRow).ShowDialog();
             if (result != DialogResult.Cancel)
             {
-                UpdateProducts();
-                RefreshProductsView(BusinessLogic.ProductDs);
+                bool updateResult = UpdateProducts();
+                if(updateResult)
+                    RefreshProductsView(BusinessLogic.ProductDs);
             }
             else
             {
@@ -164,11 +226,12 @@ namespace CashDesc
             }
         }
 
-        void UpdateProducts()
+        bool UpdateProducts()
         {
             try
             {
                 businessLogic.UpdateProducts();
+                return true;
             }
             catch(DBConcurrencyException)
             {
@@ -184,6 +247,7 @@ namespace CashDesc
                     try
                     {
                         businessLogic.UpdateProducts(true);
+                        return true;
                     }
                     catch (Exception nextEx)
                     {
@@ -203,6 +267,51 @@ namespace CashDesc
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            return false;
+        }
+
+        bool UpdateAccounts()
+        {
+            try
+            {
+                businessLogic.UpdateAccounts();
+                return true;
+            }
+            catch (DBConcurrencyException)
+            {
+                string msg = Config.Language[StrResourceKeys.ConcurencyException] + "\n" + Config.Language[StrResourceKeys.ConcurencyExceptionQuestion];
+                var ansver = MessageBox.Show(
+                    msg,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Error
+                    );
+                if (ansver == DialogResult.OK)
+                {
+                    try
+                    {
+                        businessLogic.UpdateAccounts(true);
+                        return true;
+                    }
+                    catch (Exception nextEx)
+                    {
+                        MessageBox.Show(
+                            nextEx.Message,
+                            Config.Language[StrResourceKeys.Error],
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            return false;
         }
 
         private void dataGridViewProducts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -218,7 +327,7 @@ namespace CashDesc
             }
 
             var dataRow = ((DataRowView)gridRow.DataBoundItem).Row;
-            var result = new ProductForm(dataRow, businessLogic.GetProductTypeList()).ShowDialog();
+            var result = new ProductForm(dataRow).ShowDialog();
             if (result != DialogResult.Cancel)
             {
                 UpdateProducts();
@@ -243,8 +352,116 @@ namespace CashDesc
 
         private void dataGridViewProducts_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
-            UpdateProducts();
-            RefreshProductsView(BusinessLogic.ProductDs);
+            bool updateResult = UpdateProducts();
+            if(updateResult)
+                RefreshProductsView(BusinessLogic.ProductDs);
+        }
+
+        private void btnSearchAccounts_Click(object sender, EventArgs e)
+        {
+            string numberStr = string.IsNullOrEmpty(tbAccountNumber.Text) ? null : tbAccountNumber.Text;
+            int? number = null;
+            if(numberStr != null)
+            {
+                int parsingNumber;
+                bool parseResult = int.TryParse(numberStr, out parsingNumber);
+                if (parseResult)
+                    number = parsingNumber;
+            }
+            AccountFilter filter = new AccountFilter
+            {
+                Number = number,
+                AccountDate = dtpAccountDate.Value,
+                ProductName = string.IsNullOrEmpty(cbProductFilter.Text) ? null : cbProductFilter.Text,
+                SumFrom = nudSummaFrom.Value,
+                SumTo = nudSummaTo.Value
+            };
+
+            CashDescDataSet accountDs = null;
+            try
+            {
+                businessLogic.LoadAccounts(filter);
+                accountDs = BusinessLogic.AccountDs;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            RefreshAccountsView(accountDs);
+        }
+
+        private void btnAddAccount_Click(object sender, EventArgs e)
+        {
+            int idNewRow;
+            try
+            {
+                idNewRow = businessLogic.CreateAccount();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                   ex.Message,
+                   Config.Language[StrResourceKeys.Error],
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Error);
+                return;
+            }
+
+            var newRow = BusinessLogic.AccountDs.Tables[CashDescDataSet.ACCOUNTS].NewRow();
+            newRow["Number"] = idNewRow;
+            BusinessLogic.AccountDs.Tables[CashDescDataSet.ACCOUNTS].Rows.Add(newRow);
+            BusinessLogic.AccountDs.Tables[CashDescDataSet.ACCOUNTS].AcceptChanges();
+            var result = new AccountForm(newRow,
+                BusinessLogic.AccountDs.Tables[CashDescDataSet.ACTIONS]
+                ).ShowDialog();
+            if (result != DialogResult.Cancel)
+            {
+                bool updateResult = UpdateAccounts();
+                if (updateResult)
+                    RefreshAccountsView(BusinessLogic.AccountDs);
+            }
+            else
+            {
+                BusinessLogic.AccountDs.Tables[CashDescDataSet.ACCOUNTS].Rows.Remove(newRow);
+            }
+        }
+
+        private void dataGridViewAccounts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridViewRow gridRow;
+            try
+            {
+                gridRow = dataGridViewAccounts.Rows[e.RowIndex];
+            }
+            catch (ArgumentOutOfRangeException)//Возможен клик по заголовку
+            {
+                return;
+            }
+
+            var dataRow = ((DataRowView)gridRow.DataBoundItem).Row;
+            try
+            {
+                businessLogic.LoadActionsFromAccount((int)dataRow["Number"]);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    Config.Language[StrResourceKeys.Error],
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            var result = new AccountForm(dataRow, BusinessLogic.AccountDs.Tables[CashDescDataSet.ACTIONS]).ShowDialog();
+            if (result != DialogResult.Cancel)
+            {
+                UpdateProducts();
+                RefreshProductsView(BusinessLogic.ProductDs);
+            }
         }
     }
 }

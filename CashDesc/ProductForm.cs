@@ -14,7 +14,7 @@ namespace CashDesc
 {
     public partial class ProductForm : Form
     {
-        public ProductForm(DataRow productRow, List<ProductType> productTypes)
+        public ProductForm(DataRow productRow)
         {
             InitializeComponent();
             this.Text = Config.Language[StrResourceKeys.Product] + " " + productRow["Productname"];
@@ -24,7 +24,6 @@ namespace CashDesc
 
         BusinessLogic businessLogic = new BusinessLogic();
         DataRow _product;
-        public bool RowAdded { get; private set; } = false;
 
         void InitControls()
         {
@@ -56,7 +55,6 @@ namespace CashDesc
                 _product["TypeId"] = type.Id;
                 _product["TypeName"] = type.TypeName;
             }
-            RowAdded = true;
         }
     }
 }

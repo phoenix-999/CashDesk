@@ -27,6 +27,10 @@ namespace LanguageLib
         ConcurencyException,
         ConcurencyExceptionQuestion,
         DeleteQuestion,
-        DeleteConfirmed
+        DeleteConfirmed,
+        AccountNumber,
+        AccountDate,
+        Amount,
+        Discount
     }
 }
